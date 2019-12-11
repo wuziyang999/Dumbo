@@ -1,0 +1,132 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <script src="~/layui/layui.js"></script>
+    <link href="~/layui/css/layui.css" rel="stylesheet" />
+    <script src="~/Js/jquery-3.4.1.js"></script>
+    <title>Index</title>
+</head>
+<body>
+    姓名：<input id="Name" type="text" />
+    年龄：<input id="Age" type="text" />
+    @*<input id="Sex" type="text" />*@
+    <input id="Sel_Btn" type="button" value="查询" />
+    <table id="qq" class="layui-table"></table>
+    <div>一共有<span id="count"></span>条数据,第<span id="index"></span>页/共<span id="countIndex"></span>页</div> <div id="demo0"></div>
+</body>
+</html>
+<script>
+    layui.use(['laypage', 'layer'], function () {
+        var laypage = layui.laypage,
+            layer = layui.layer,
+            $ = layui.jquery;
+        //总页数低于页码总数
+        //laypage.render({
+        //    elem: 'demo0'
+        //    , count: 50 //数据总数
+        //});
+
+        //定义一个url使用$.post({})方法查询总数。
+        //var url = "PageCount";
+
+        $.post("PageCount", function (Count) {
+            var PageSize = 15
+            var page = (Count % PageSize == 0) ? Math.ceil(Count / PageSize) : Math.ceil((Count / PageSize))
+            laypage.render({
+                elem: 'demo0'
+                , count: Count
+                //, pages: page
+                , limit: PageSize
+                , first: '首页'
+                , last: '尾页'
+                , jump: function (obj) {
+                    var PageIndex = obj.curr;
+                    $("#count").text(Count);
+                    $("#index").text(PageIndex);
+                    $("#countIndex").text(page);
+                    var Name = $("#Name").val();
+                    var Age = $("#Age").val();
+                    //var Sex = $("#Sex").val();
+                    //var url = "GetList?PageIndex=" + PageIndex + "&PageSize=" + PageSize;
+                    var pages = {
+                        data: {
+                            "PageIndex": PageIndex,
+                            "PageSize": PageSize,
+                            "UserAge": Age,
+                            //"UserSex": Sex,
+                            "UserName": Name
+                        }
+                    }
+                    SelFenYe(pages);
+                }
+            });
+        });
+
+
+
+
+
+
+
+        //laypage.render({
+        //    elem: 'demo20'
+        //    , count: data.length
+        //    , jump: function (obj) {
+        //        //模拟渲染
+        //        document.getElementById('biuuu_city_list').innerHTML = function () {
+        //            var arr = []
+        //                , thisData = data.concat().splice(obj.curr * obj.limit - obj.limit, obj.limit);
+        //            layui.each(thisData, function (index, item) {
+        //                arr.push('<li>' + item + '</li>');
+        //            });
+        //            return arr.join('');
+        //        }();
+        //    }
+        //});
+    })
+
+    function SelFenYe(page) {
+
+        //if (Name != "") {
+        //    url += "&Name=" + Name;
+        //}
+        //if (Sex != "") {
+        //    url += "&Name=" + Name;
+        //    if (Name != "") {
+        //        url += "&Name=" + Name;
+        //    }
+        //}
+        $.post("GetList", page.data, function (json) {
+            var html = "";
+            $.each(json, function (i, q) {
+
+                html += "<tr>";
+                html += "<td>" + q.UserID + "</td>";
+                html += "<td>" + q.UserName + "</td>";
+                html += "<td>" + (q.UserSex == true ? "男" : "女") + "</td>";
+                html += "<td>" + q.UserAge + "</td>";
+                html += "<td> <a>操作</a></td>";
+                html += "</tr>";
+            })
+            $("#qq").html(html);
+            //for (var q in JSON.stringify(json)) {
+            //    html += "<tr>";
+            //    html += "<td>" + q.UserID + "</td>";
+            //    html += "<td>" + q.username + "</td>";
+            //    html += "<td>" + q.usersex + "</td>";
+            //    html += "<td>" + q.userage + "</td>";
+            //    html += "</tr>";
+            //}
+        })
+    }
+    $("#Sel_Btn").click(function () {
+
+    })
+</script>
