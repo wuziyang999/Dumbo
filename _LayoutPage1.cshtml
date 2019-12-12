@@ -1,0 +1,17 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <script src="~/JS/jquery-1.11.3.min.js"></script>
+    <script src="~/JS/jquery.tmpl.js"></script>
+    <script src="~/JS/paging.js"></script>
+
+    @RenderSection("styles");
+</head>
+<body>
+    <div>
+        @RenderBody()
+    </div>@RenderSection("scripts");
+</body>
+</html>
