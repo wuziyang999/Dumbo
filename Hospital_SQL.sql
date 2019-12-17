@@ -12,7 +12,7 @@ use Hospital
 go
 
 
---创建用户表
+--创建用户表Users
 if exists(select * from sys.tables where name='Users')
 drop table Users
 go
@@ -29,6 +29,47 @@ create table Users
   UserType int check(UserType=1 or UserType=2 or UserType=3),--角色(1=用户，2=医师，3=管理员)
 )
 go
+insert into Users values ('张三','admin','admin','男',18,'17630036636','123123@qq.com',1)
+insert into Users values ('张三','123','123','男',18,'17630036636','123123@qq.com',2)
+insert into Users values ('张三','456','456','男',18,'17630036636','123123@qq.com',3)
+select * from Users as u,TypeUser as r,MenuUser as m 
+where u.UserType=3 and r.menuID=1003
+
+select * from Users as u,TypeUser where u.UserID=TypeUser.TypeID and u.UserType=3
+select * from TypeUser,MenuUser where TypeUser.menuID=MenuUser.MenuTypeID and MenuUser.MenuTypeID =1002
+--身份菜单表
+if exists(select * from sys.tables where name='TypeUser')
+drop table TypeUser
+go
+create table TypeUser
+(
+
+  TypeID int primary key identity(1,1),--用户ID
+  menu varchar(20), --菜单
+  menuID int, --菜单ID
+  UserType int check(UserType=1 or UserType=2 or UserType=3),--角色(1=用户，2=医师，3=管理员)
+)
+insert into TypeUser values('一级菜单',1001,1)
+insert into TypeUser values('一级菜单',1002,2)
+insert into TypeUser values('一级菜单',1003,3)
+
+--菜单表
+if exists(select * from sys.tables where name='MenuUser')
+drop table MenuUser
+go
+create table MenuUser
+(  
+MenuID int primary key identity(1,1),--用户ID
+ Menu varchar(20), --菜单
+ MenuTypeID int, --菜单ID
+)
+insert into MenuUser values('aaa',1001)
+insert into MenuUser values('bbb',1001)
+insert into MenuUser values('ccc',1001)
+insert into MenuUser values('ddd',1002)
+insert into MenuUser values('qqq',1002)
+insert into MenuUser values('www',1002)
+insert into MenuUser values('eee',1003)
 
 --创建医师表
 if exists(select * from sys.tables where name='Doctor')
