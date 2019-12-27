@@ -26,7 +26,7 @@ create table Users
   UserAge int not null,--年龄
   UserPhone varchar(50) ,--电话
   UserEmile varchar(50) ,--邮箱
-  UserType int check(UserType=1 or UserType=2 or UserType=3),--角色(1=，2=医师，3=管理员用户)
+  UserType int check(UserType=1 or UserType=2 or UserType=3),--角色(1=管理员，2=医师，3=用户)
 )
 select UserType,count(UserType) as 数量 from Users  group by UserType
 select * from Users
@@ -36,7 +36,7 @@ insert into Users values ('张三','1','2','男',18,'17630036636','123123@qq.com',1
 insert into Users values ('张三','123','123','男',18,'17630036636','123123@qq.com',2)
 insert into Users values ('张三','456','456','男',18,'17630036636','123123@qq.com',3)
 insert into Users values ('张三','789','789','男',19,'17630036636','123123@qq.com',3)
-delete from Users where UserID=5
+delete from Users where UserID=11
 select * from Users
 select  UserAge, COUNT(UserAge) as number from Users group by UserAge
 --身份菜单表
@@ -53,6 +53,7 @@ create table TypeUser
   UserType int check(UserType=1 or UserType=2 or UserType=3),--角色(1=用户，2=医师，3=管理员)
 )
 insert into TypeUser values('医院分布',1001,1009,1)
+insert into TypeUser values('全部用户',1001,1010,1)
 insert into TypeUser values('医师管理',1001,1001,1)
 insert into TypeUser values('请假管理',1001,1002,1)
 insert into TypeUser values('病人管理',1001,1003,1)
@@ -73,6 +74,7 @@ MenuID int primary key identity(1,1),--用户ID
  Url varchar(50) , --链接
  MenuTypeID int, --二级菜单ID
 )
+insert into MenuUser values('全部用户','/Default/UserDate',1010)
 insert into MenuUser values('全部医师','Javascript:void(0)',1001)
 insert into MenuUser values('已请假医师','Javascript:void(0)',1002)
 insert into MenuUser values('未审批','Javascript:void(0)',1002)
@@ -88,7 +90,6 @@ insert into MenuUser values('已开药单','Javascript:void(0)',1004)
 insert into MenuUser values('全部病人','Javascript:void(0)',1005)
 insert into MenuUser values('未就诊','Javascript:void(0)',1005)
 insert into MenuUser values('已预约','Javascript:void(0)',1005)
-
 insert into MenuUser values('我的订单','Javascript:void(0)',1006)
 insert into MenuUser values('全部医师','Javascript:void(0)',1007)
 insert into MenuUser values('已预约','Javascript:void(0)',1007)
@@ -100,12 +101,14 @@ go
 create table Doctor
 (
     DocID int primary key identity(1,1),--医师ID
+	DocName varchar(200) ,
 	DocBrief varchar(200) ,--简介
 	DocTech varchar(100) ,--医疗技术
 	UserID int references Users(UserID),--医师外键
 )
 go
-
+insert into Doctor values('张三','精通医术','医术高明',1001)
+select * from Doctor
 --创建挂号表
 
 if exists(select * from sys.tables where name='Register')
